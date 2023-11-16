@@ -1,6 +1,7 @@
-// teht 2.6 puhelinluettelo step1
-// toteutetaan puhelinluettelon tulostus 
-// toteutetaan henkilön lisäys luetteloon
+// teht 2.7 puhelinluettelo step2
+// rakennetaan dublikaattinimien tarkastus
+// estetään dublikaattien tallennus
+// annetaan ilmoitus dublikaattitallennusyrityksestä
 
 import { useState } from 'react'
 
@@ -10,19 +11,33 @@ const App = () => {
 
   const addNumber = (event) => {
     event.preventDefault()
-    console.log("saved", persons)
     const newObject = {
       name: newName,
     }
-    setPersons(persons.concat(newObject))
-    setNewName('')
+
+    const dublicatePerson = persons.find((person) => person.name === newName);
+
+    if (dublicatePerson) {
+
+      alert(`${newName} is already added to phonebook.`);
+      console.log("ilmoitus dublikaatista")
+
+    } else {
+      const newObject = {
+        name: newName,
+      };
+    
+      setPersons(persons.concat(newObject))
+      setNewName('')
+      
+      console.log("saved ", newName)
+    }
   }
 
   const handdleNumberChange = (event) => {
     setNewName(event.target.value)
   }
 
-  console.log(persons.name)
   return (
     <div>
       <h2>Phonebook</h2>
