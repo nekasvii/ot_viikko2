@@ -1,18 +1,20 @@
-// teht 2.7 puhelinluettelo step2
-// rakennetaan dublikaattinimien tarkastus
-// estetään dublikaattien tallennus
-// annetaan ilmoitus dublikaattitallennusyrityksestä
+// teht 2.8 puhelinluettelo step3
+// lisätään toiseen inputtiin numeroiden tallennus
+// lisätty myös uusi tapahtumakäsittelijä ja
+// addNumberiin kaikki tarpeellinen puhelinnumeron tallentamiseen
 
 import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([ { name: 'Arto Hellas' } ]) 
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const addNumber = (event) => {
     event.preventDefault()
     const newObject = {
       name: newName,
+      number: newNumber,
     }
 
     const dublicatePerson = persons.find((person) => person.name === newName);
@@ -25,17 +27,23 @@ const App = () => {
     } else {
       const newObject = {
         name: newName,
+        number: newNumber,
       };
     
       setPersons(persons.concat(newObject))
       setNewName('')
+      setNewNumber('')
       
-      console.log("saved ", newName)
+      console.log("saved ", newName, newNumber)
     }
   }
 
-  const handdleNumberChange = (event) => {
+  const handdleNameChange = (event) => {
     setNewName(event.target.value)
+  }
+
+  const handdleNumberChange = (event) => {
+    setNewNumber(event.target.value)
   }
 
   return (
@@ -45,13 +53,17 @@ const App = () => {
         <div>
           name: <input
             value={newName}
-            onChange={handdleNumberChange} 
-          />
+            onChange={handdleNameChange} 
+          /> <br />
+          number: <input
+            value={newNumber}
+            onChange={handdleNumberChange}
+          /> <br />
           <button type="submit">add</button>
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map(person => <p key={person.name}>{person.name}</p>)}
+      {persons.map(person => <p key={person.name}>{person.name} {person.number}</p>)}
     </div>
   )
 }
