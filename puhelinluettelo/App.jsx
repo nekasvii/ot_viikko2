@@ -1,7 +1,15 @@
-// teht 2.9 puhelinluettelo step4
-// lisätään lomakkeelle hakukenttä, jolla rajataan näytettäviä nimiä
+// teht 2.10 puhelinluettelo step5
+// eriytetään sovellus komponentteihin (väh 3)
+// tila- ja tapahtumakäsittelijät App
+// lomakkeen tiedot eivät suostuneet päivittymään komponenttijaon myötä
+// joten pakotettu koodi useEffectin avulla päivittämään lista
+
 
 import { useState } from 'react'
+import { useEffect } from 'react'
+import Filter from './components/Filter'
+import Numbers from './components/Numbers'
+import PersonForm from './components/PersonForm'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -18,12 +26,12 @@ const App = () => {
 
   const addNumber = (event) => {
     event.preventDefault()
+
+    const dublicatePerson = persons.find((person) => person.name === newName);
     const newObject = {
       name: newName,
       number: newNumber,
     }
-
-    const dublicatePerson = persons.find((person) => person.name === newName);
 
     if (dublicatePerson) {
 
@@ -35,24 +43,24 @@ const App = () => {
         name: newName,
         number: newNumber,
       }
-    
       setPersons(persons.concat(newObject))
       setNewName('')
       setNewNumber('')
       
       console.log("saved ", newName, newNumber)
+      console.log(persons)
     }
   }
 
-  const handdleNameChange = (event) => {
+  const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
 
-  const handdleNumberChange = (event) => {
+  const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
   }
 
-  const handdleSearch = (event) => {
+  const handleSearch = (event) => {
     const condition = event.target.value
     setNewCondition(condition)
   
@@ -62,34 +70,27 @@ const App = () => {
     
     setFilteredPersons(filtered)
   }
-  
 
+  useEffect(() => {setFilteredPersons(persons)}, [persons])
+  
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addNumber}>
-        <div>
-          filter shown with <input
-            value={newCondition}
-            onChange={handdleSearch}
-          />
-        </div>
-        <div>
-          <h2>Add a new</h2>
-          name: <input
-            value={newName}
-            onChange={handdleNameChange} 
-          /> <br />
-          number: <input
-            value={newNumber}
-            onChange={handdleNumberChange}
-          /> <br />
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter newCondition={newCondition} handleSearch={handleSearch} />
+      <div>
+      <h2>Add a new</h2>
+        <PersonForm
+          newName={newName}
+          newNumber={newNumber}
+          handleNameChange={handleNameChange}
+          handleNumberChange={handleNumberChange}
+          addNumber={addNumber}
+        />
+      </div>
+
       <h2>Numbers</h2>
-        {filteredPersons.map((person) => (<p key={person.name}>{person.name} {person.number}</p> ))}    
-  </div>
+      <Numbers filteredPersons={filteredPersons} /> 
+    </div>
   )
 }
 
