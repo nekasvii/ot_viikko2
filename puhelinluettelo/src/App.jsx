@@ -1,12 +1,11 @@
-// teht 2.10 puhelinluettelo step5
-// eriytetään sovellus komponentteihin (väh 3)
-// tila- ja tapahtumakäsittelijät App
-// lomakkeen tiedot eivät suostuneet päivittymään komponenttijaon myötä
-// joten pakotettu koodi useEffectin avulla päivittämään lista
+// teht 2.11 puhelinluettelo step6
+// Tallennetaan sovelluksen alkutila projektin juureen tiedostoon db.json
+// sovellus ei vielä tallenna tietoja
+// consolessa näkyy "yhden syklin myöhässä" uudet nimet
 
 
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import Filter from './components/Filter'
 import Numbers from './components/Numbers'
 import PersonForm from './components/PersonForm'
@@ -71,7 +70,20 @@ const App = () => {
     setFilteredPersons(filtered)
   }
 
-  useEffect(() => {setFilteredPersons(persons)}, [persons])
+  const hook = () => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+      })
+  }
+  
+  useEffect(hook, [])
+
+  console.log('render', persons.length, 'persons')
+    // setFilteredPersons(persons), [persons]
   
   return (
     <div>
