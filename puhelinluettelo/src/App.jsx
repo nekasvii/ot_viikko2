@@ -1,8 +1,7 @@
-// teht 2.11 puhelinluettelo step6
-// Tallennetaan sovelluksen alkutila projektin juureen tiedostoon db.json
-// sovellus ei vielä tallenna tietoja
-// consolessa näkyy "yhden syklin myöhässä" uudet nimet
-
+// teht 2.12 puhelinluettelo step7
+// muokattu ohjelma tallentamaan uudet henkilöt db.json
+// tuotu aiemmin ollut elementti useEffect ennen lopun returnia
+// koska selain ei päivittänyt puhelinluetteloa reaaliajassa
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
@@ -49,7 +48,17 @@ const App = () => {
       console.log("saved ", newName, newNumber)
       console.log(persons)
     }
+    axios    
+    .post('http://localhost:3001/persons', newObject)    
+    .then(response => {      
+      console.log(response)    
+      setPersons(persons.concat(response.data))      
+      setNewName('')
+      setNewNumber('')
+    })  
   }
+
+  useEffect(() => {setFilteredPersons(persons)}, [persons])
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
