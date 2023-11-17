@@ -1,10 +1,17 @@
 // vastaa nimien ja numeroiden tulostuksesta näytölle
+// tarjoaa delete-nappulan tietojen poistoon rekisteristä
 
-const Numbers = ({ filteredPersons }) => {
+const Numbers = ({ filteredPersons, removePerson}) => {
 
+  
   return (
     <div>
-      {filteredPersons.map((person) => (<p key={person.name}>{person.name} {person.number}</p>))}
+      {filteredPersons.map((person) => (
+        <p key={person.id}>
+          {person.name} {person.number}
+          <button onClick={() => removePerson(person.id)}>Delete</button>
+        </p>
+      ))}
     </div>
   )
 }

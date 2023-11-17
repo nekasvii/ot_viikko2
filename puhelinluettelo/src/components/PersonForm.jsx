@@ -5,8 +5,8 @@ const PersonForm = ({ newName, newNumber, handleNameChange, handleNumberChange, 
     <div>
       <form onSubmit={addNumber}>
       <div>
-        name: <input value={newName} onChange={handleNameChange} /> <br />
-        number: <input value={newNumber} onChange={handleNumberChange} /> <br />
+        name: <input value={newName} onChange={handleNameChange} /> <br /><br />
+        number: <input value={newNumber} onChange={handleNumberChange} /> <br /><br />
         <button type="submit">add</button>
       </div>
       </form>

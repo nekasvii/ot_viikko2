@@ -1,6 +1,7 @@
-// teht 2.13 puhelinluettelo step8
-// palvelinkommunikaation viedään omaan moduuliin esimerkin mukaisesti
-// korjattu, ettei voi tallentaa dublikaattinimeä
+// teht 2.14 puhelinluettelo step9
+// TODO: lisätään ohjelmaan mahdollisuus yhteistietojen poistamiseen 
+// TODO: poisto tapahtuu delete-napilla nimen yhteydessä
+// TODO: poisto varmistetaan käyttäjältä window.confirm-metodilla
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
@@ -56,6 +57,21 @@ const App = () => {
       
       console.log("saved ", newName, newNumber)
       console.log(persons)
+    }
+  }
+
+  const removePerson = (id) => {
+    const personToBeDeleted = persons.find((person) => person.id === id)
+  
+    if (window.confirm(`Are you sure you want to delete ${personToBeDeleted.name}?`)) {
+      personService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id))
+        })
+        .catch((error) => {
+          console.error('Could not delete person:', error);
+        })
     }
   }
 
@@ -116,7 +132,7 @@ const App = () => {
       </div>
 
       <h2>Numbers</h2>
-      <Numbers filteredPersons={filteredPersons} /> 
+      <Numbers filteredPersons={filteredPersons} removePerson={removePerson}/> 
     </div>
   )
 }

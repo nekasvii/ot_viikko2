@@ -9,9 +9,6 @@ axios.get('http://localhost:3001/persons').then(response => {
   console.log(persons)
 })
 
-//const promise2 = axios.get('http://localhost:3001/foobar')
-//console.log(promise2)
-
 const notes = [
   {
     id: 1,
