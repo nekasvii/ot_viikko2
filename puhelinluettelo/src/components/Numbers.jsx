@@ -6,8 +6,8 @@ const Numbers = ({ filteredPersons, removePerson}) => {
   
   return (
     <div>
-      {filteredPersons.map((person) => (
-        <p key={person.id}>
+      {filteredPersons.map((person, index) => (
+        <p key={index}>
           {person.name} {person.number}
           <button onClick={() => removePerson(person.id)}>Delete</button>
         </p>

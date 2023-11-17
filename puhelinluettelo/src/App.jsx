@@ -1,7 +1,7 @@
-// teht 2.14 puhelinluettelo step9
-// TODO: lisätään ohjelmaan mahdollisuus yhteistietojen poistamiseen 
-// TODO: poisto tapahtuu delete-napilla nimen yhteydessä
-// TODO: poisto varmistetaan käyttäjältä window.confirm-metodilla
+// teht 2.15 puhelinluettelo step10
+// muutetaan toiminnallisuutta: 
+// dublikaattinimen löytyessä kysytään
+// josko käyttäjä haluaa korvata vanhan numeron uudella
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
@@ -33,9 +33,22 @@ const App = () => {
     }
 
     if (dublicatePerson) {
-
-      alert(`${newName} is already added to phonebook.`);
-      console.log("ilmoitus dublikaatista")
+      const replaceNumber = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+  
+      if (replaceNumber) {
+        personService
+          .update(dublicatePerson.id, newObject) 
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) => person.id === returnedPerson.id ? returnedPerson : person)
+            )
+            setNewName('')
+            setNewNumber('')
+            console.log('number changed')
+          })
+      } else {
+        console.log('Number change cancelled')
+      }
 
     } else {
       const newObject = {
@@ -68,10 +81,10 @@ const App = () => {
         .remove(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id))
+        console.log('deleted ', personToBeDeleted)
         })
-        .catch((error) => {
-          console.error('Could not delete person:', error);
-        })
+    } else {
+      console.log('Deletion cancelled')
     }
   }
 
