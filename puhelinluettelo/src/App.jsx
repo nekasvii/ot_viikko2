@@ -1,10 +1,10 @@
-// teht 2.12 puhelinluettelo step7
-// muokattu ohjelma tallentamaan uudet henkilöt db.json
-// tuotu aiemmin ollut elementti useEffect ennen lopun returnia
-// koska selain ei päivittänyt puhelinluetteloa reaaliajassa
+// teht 2.13 puhelinluettelo step8
+// palvelinkommunikaation viedään omaan moduuliin esimerkin mukaisesti
+// korjattu, ettei voi tallentaa dublikaattinimeä
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 import Filter from './components/Filter'
 import Numbers from './components/Numbers'
 import PersonForm from './components/PersonForm'
@@ -44,18 +44,19 @@ const App = () => {
       setPersons(persons.concat(newObject))
       setNewName('')
       setNewNumber('')
+
+      personService
+        .create(newObject)
+        .then(returnedPerson => {
+          console.log(returnedPerson)
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
       
       console.log("saved ", newName, newNumber)
       console.log(persons)
     }
-    axios    
-    .post('http://localhost:3001/persons', newObject)    
-    .then(response => {      
-      console.log(response)    
-      setPersons(persons.concat(response.data))      
-      setNewName('')
-      setNewNumber('')
-    })  
   }
 
   useEffect(() => {setFilteredPersons(persons)}, [persons])
@@ -86,6 +87,11 @@ const App = () => {
       .then(response => {
         console.log('promise fulfilled')
         setPersons(response.data)
+      })
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }
   
