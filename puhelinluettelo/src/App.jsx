@@ -1,7 +1,8 @@
-// teht 2.15 puhelinluettelo step10
-// muutetaan toiminnallisuutta: 
-// dublikaattinimen löytyessä kysytään
-// josko käyttäjä haluaa korvata vanhan numeron uudella
+// teht 2.16 puhelinluettelo step11
+// tehdään sivun muotoilut .css -tiedostoon
+// annetaan parempi virheilmoitus onnistuneesta operaatiosta:
+// henkilön lisäys, poisto ja num. muutos.
+// hieman korjattu koodia päivittymään oikeammin operaatioden jälkeen
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
@@ -9,6 +10,7 @@ import personService from './services/persons'
 import Filter from './components/Filter'
 import Numbers from './components/Numbers'
 import PersonForm from './components/PersonForm'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -22,6 +24,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newCondition, setNewCondition] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [errorMessage, setErrorMessage] = useState('error happened')
+  const [notificationMessage, setNotificationMessage] = useState(null);
 
   const addNumber = (event) => {
     event.preventDefault()
@@ -38,14 +42,27 @@ const App = () => {
       if (replaceNumber) {
         personService
           .update(dublicatePerson.id, newObject) 
+
           .then((returnedPerson) => {
             setPersons(
               persons.map((person) => person.id === returnedPerson.id ? returnedPerson : person)
             )
+            setFilteredPersons(
+              persons.map((person) => person.id === returnedPerson.id ? returnedPerson : person)
+            )
+            setNotificationMessage(
+              `The number '${newObject.number}' has been saved for '${dublicatePerson.name}'`
+            )
+            setTimeout(() => {          
+              setNotificationMessage(null)        
+            }, 5000)
+
             setNewName('')
             setNewNumber('')
-            console.log('number changed')
+          
+          console.log('number changed')
           })
+          
       } else {
         console.log('Number change cancelled')
       }
@@ -64,6 +81,15 @@ const App = () => {
         .then(returnedPerson => {
           console.log(returnedPerson)
           setPersons(persons.concat(returnedPerson))
+          setFilteredPersons(persons.concat(returnedPerson))
+
+          setNotificationMessage(
+            `'${returnedPerson.name}' added.`
+          )
+          setTimeout(() => {          
+            setNotificationMessage(null)        
+          }, 5000)
+
           setNewName('')
           setNewNumber('')
         })
@@ -81,6 +107,13 @@ const App = () => {
         .remove(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id))
+          setFilteredPersons(persons.filter((person) => person.id !== id))
+          setNotificationMessage(
+            `'${personToBeDeleted.name}'s removed from the Phonebook`
+          )
+          setTimeout(() => {          
+            setNotificationMessage(null)        
+          }, 5000)
         console.log('deleted ', personToBeDeleted)
         })
     } else {
@@ -88,7 +121,7 @@ const App = () => {
     }
   }
 
-  useEffect(() => {setFilteredPersons(persons)}, [persons])
+  // useEffect(() => {setFilteredPersons(persons)}, [persons])
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -116,22 +149,24 @@ const App = () => {
       .then(response => {
         console.log('promise fulfilled')
         setPersons(response.data)
+        setFilteredPersons(response.data)
       })
     personService
       .getAll()
       .then(initialPersons => {
         setPersons(initialPersons)
+        setFilteredPersons(initialPersons)
       })
   }
   
   useEffect(hook, [])
 
   console.log('render', persons.length, 'persons')
-    // setFilteredPersons(persons), [persons]
   
   return (
     <div>
-      <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
+      <h1>Phonebook</h1>
       <Filter newCondition={newCondition} handleSearch={handleSearch} />
       <div>
       <h2>Add a new</h2>
