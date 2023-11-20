@@ -1,9 +1,13 @@
-// Teht 2.18 maiden tiedot step1
-// rakennetaan sovellus, joka osaa hakea tietoa 
-// erimaista ositteesta: https://studies.cs.helsinki.fi/restcountries/api/all
-// näytölle näytetään max 10 maan nimet hakuehdon mukaan
-// kun maita on 1, näytetään ks. maan tiedot
-// useEffectin avulla haetaan maiden nimistä hakuehdon muuttuessa
+// Teht 2.19 maiden tiedot step2
+// muokataan edellistä versiota
+// jokaisen listattavan maan viereen nappi,
+// josta klikkaamalla saa ks. maan tiedot esiin
+// teht 2.19 TEKEMÄTTÄ
+
+// Teht 2.20 maiden tiedot step3
+// lisätään jokaisen maan yhteyteen pääkaupungin säätiedot
+// sivustolta https://openweathermap.org/
+// Teht 2.20 VALMIS
 
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
