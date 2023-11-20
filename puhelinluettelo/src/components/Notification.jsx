@@ -1,4 +1,4 @@
-// komponentti virheilmoituksille
+// komponentti onnistumisilmoituksille
 
 const Notification = ({ message }) => {
   if (message === null) {

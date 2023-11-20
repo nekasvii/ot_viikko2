@@ -1,8 +1,7 @@
-// teht 2.16 puhelinluettelo step11
-// tehdään sivun muotoilut .css -tiedostoon
-// annetaan parempi virheilmoitus onnistuneesta operaatiosta:
-// henkilön lisäys, poisto ja num. muutos.
-// hieman korjattu koodia päivittymään oikeammin operaatioden jälkeen
+// teht 2.17 puhelinluettelo step12
+// tehdään parempi virheilmoitus samaisella logiikalla
+// kuin edellisen vaiheen tietojenpäivitysilmoitukset
+// luotu uusi komponentti Error huolehtimaan virheilmoituksista käyttäjälle
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
@@ -11,6 +10,7 @@ import Filter from './components/Filter'
 import Numbers from './components/Numbers'
 import PersonForm from './components/PersonForm'
 import Notification from './components/Notification'
+import Error from './components/Error'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -24,7 +24,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newCondition, setNewCondition] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
-  const [errorMessage, setErrorMessage] = useState('error happened')
+  const [errorMessage, setErrorMessage] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState(null);
 
   const addNumber = (event) => {
@@ -108,14 +108,26 @@ const App = () => {
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id))
           setFilteredPersons(persons.filter((person) => person.id !== id))
+
           setNotificationMessage(
             `'${personToBeDeleted.name}'s removed from the Phonebook`
           )
           setTimeout(() => {          
             setNotificationMessage(null)        
           }, 5000)
-        console.log('deleted ', personToBeDeleted)
+
         })
+        .catch(error => {
+          setErrorMessage(
+            `Information of '${personToBeDeleted.name}' has already removed from server`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000 )
+
+          setFilteredPersons(persons.filter((person) => person.id !== id))
+        })
+        
     } else {
       console.log('Deletion cancelled')
     }
@@ -166,6 +178,7 @@ const App = () => {
   return (
     <div>
       <Notification message={notificationMessage} />
+      <Error message={errorMessage} />
       <h1>Phonebook</h1>
       <Filter newCondition={newCondition} handleSearch={handleSearch} />
       <div>
